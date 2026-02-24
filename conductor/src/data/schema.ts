@@ -24,6 +24,26 @@ export enum IdentifyType {
 }
 
  
+ 
+/**
+ * 节点引脚类型
+ */
+export enum NodePinType {
+    /**
+     * 文本
+     */
+    STRING = 0,
+    /**
+     * 数值
+     */
+    NUMBER = 1,
+    /**
+     * 游戏模块
+     */
+    GAME_MODULE = 2,
+}
+
+ 
 
 
 
@@ -34,10 +54,8 @@ export class GameModule {
     constructor(_json_: any) {
         if (_json_.id === undefined) { throw new Error() }
         this.id = _json_.id
-        if (_json_.display_name === undefined) { throw new Error() }
-        this.displayName = _json_.display_name
-        if (_json_.path === undefined) { throw new Error() }
-        this.path = _json_.path
+        if (_json_.full_name === undefined) { throw new Error() }
+        this.fullName = _json_.full_name
         if (_json_.identify_type === undefined) { throw new Error() }
         this.identifyType = _json_.identify_type
         if (_json_.identify_asset === undefined) { throw new Error() }
@@ -53,13 +71,9 @@ export class GameModule {
      */
     readonly id: number
     /**
-     * 显示名称
+     * 全名称（路径+名称）
      */
-    readonly displayName: string
-    /**
-     * 路径
-     */
-    readonly path: string
+    readonly fullName: string
     /**
      * 识别类型
      */
@@ -78,7 +92,6 @@ export class GameModule {
     readonly description: string
 
     resolve(tables:Tables) {
-        
         
         
         
@@ -163,7 +176,7 @@ export class NodePin {
     /**
      * 引脚类型
      */
-    readonly type: string
+    readonly type: NodePinType
     /**
      * 引脚名称
      */

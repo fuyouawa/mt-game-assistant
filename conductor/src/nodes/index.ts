@@ -1,19 +1,22 @@
-import BaseNode from './BaseNode'
-import { NodeType } from '@/types/nodes'
+import { type NodeTypes } from 'reactflow'
+import SchemaNode from './SchemaNode'
 
-export const nodeTypes = {
-  [NodeType.START]: BaseNode,
-  [NodeType.END]: BaseNode,
-  [NodeType.CLICK]: BaseNode,
-  [NodeType.SWIPE]: BaseNode,
-  [NodeType.WAIT]: BaseNode,
-  [NodeType.INPUT]: BaseNode,
-  [NodeType.CONDITION]: BaseNode,
-  [NodeType.LOOP]: BaseNode,
-  [NodeType.IMAGE_DETECT]: BaseNode,
-  [NodeType.COLOR_DETECT]: BaseNode,
-  [NodeType.OCR_DETECT]: BaseNode,
+/**
+ * 节点类型映射表
+ * 所有从配表动态加载的节点类型都使用 SchemaNode 组件
+ */
+export const nodeTypes: NodeTypes = {}
+
+/**
+ * 动态注册从配表加载的节点类型
+ * @param nodeIds - 节点定义ID列表
+ */
+export function registerSchemaNodeTypes(nodeIds: number[]) {
+  nodeIds.forEach(id => {
+    const typeName = `schema_node_${id}`
+    nodeTypes[typeName] = SchemaNode
+  })
 }
 
-export { BaseNode }
-export * from '@/types'
+export { SchemaNode }
+export type { SchemaNodeData } from '@/utils/nodeDefinitionGenerator'

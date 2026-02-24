@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { Connection, Edge, Node, addEdge, applyNodeChanges, applyEdgeChanges, NodeChange, EdgeChange } from 'reactflow'
-import { NodeType } from '@/types'
 
 interface FlowState {
   nodes: Node[]
@@ -20,21 +19,30 @@ interface FlowState {
 }
 
 export const useFlowStore = create<FlowState>((set) => ({
-  nodes: [
-    {
-      id: 'start-1',
-      type: NodeType.START,
-      position: { x: 100, y: 100 },
-      data: { label: '开始' },
-    },
-  ],
+  nodes: [],
   edges: [],
   selectedNodeId: null,
 
   onNodesChange: (changes) => {
-    set((state: FlowState) => ({
-      nodes: applyNodeChanges(changes, state.nodes),
-    }))
+    set((state: FlowState) => {
+      // 使用 applyNodeChanges，但确保保留自定义数据
+      const resultNodes = applyNodeChanges(changes, state.nodes)
+
+      // 修复：确保 resultNodes 中的每个节点都保留原有的完整 data
+      const fixedNodes = resultNodes.map(node => {
+        const originalNode = state.nodes.find(n => n.id === node.id)
+        if (originalNode && originalNode.data.schemaId && !node.data.schemaId) {
+          // 如果新节点丢失了自定义数据，从原节点恢复
+          return {
+            ...node,
+            data: originalNode.data,
+          }
+        }
+        return node
+      })
+
+      return { nodes: fixedNodes }
+    })
   },
 
   onEdgesChange: (changes) => {

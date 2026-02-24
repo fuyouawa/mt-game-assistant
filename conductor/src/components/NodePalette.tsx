@@ -1,55 +1,63 @@
-import { useMemo } from 'react'
-import { useReactFlow } from 'reactflow'
-import { NodeType } from '@/types'
-import { useFlowStore } from '@/stores'
-
-interface NodeTemplate {
-  type: NodeType
-  label: string
-  category: string
-  color: string
-}
-
-const NODE_TEMPLATES: NodeTemplate[] = [
-  // 基础节点
-  { type: NodeType.START, label: '开始', category: '基础', color: '#22c55e' },
-  { type: NodeType.END, label: '结束', category: '基础', color: '#ef4444' },
-
-  // 动作节点
-  { type: NodeType.CLICK, label: '点击', category: '动作', color: '#3b82f6' },
-  { type: NodeType.SWIPE, label: '滑动', category: '动作', color: '#3b82f6' },
-  { type: NodeType.WAIT, label: '等待', category: '动作', color: '#3b82f6' },
-  { type: NodeType.INPUT, label: '输入', category: '动作', color: '#3b82f6' },
-
-  // 控制节点
-  { type: NodeType.CONDITION, label: '条件判断', category: '控制', color: '#f59e0b' },
-  { type: NodeType.LOOP, label: '循环', category: '控制', color: '#8b5cf6' },
-
-  // 检测节点
-  { type: NodeType.IMAGE_DETECT, label: '图像识别', category: '检测', color: '#06b6d4' },
-  { type: NodeType.COLOR_DETECT, label: '颜色检测', category: '检测', color: '#06b6d4' },
-  { type: NodeType.OCR_DETECT, label: '文字识别', category: '检测', color: '#06b6d4' },
-]
+import { useMemo, useEffect, useState } from 'react'
+import { TablesLoader } from '@/utils/tablesLoader'
+import { NodeTemplate, groupNodesByCategory } from '@/utils/nodeDefinitionGenerator'
 
 const NodePalette = () => {
-  const addNode = useFlowStore((state) => state.addNode)
+  const [nodeTemplates, setNodeTemplates] = useState<NodeTemplate[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // 从配表加载节点定义
+  useEffect(() => {
+    try {
+      const nodes = TablesLoader.getNodes()
+      const templates = nodes.map(node => ({
+        id: node.id,
+        type: `schema_node_${node.id}`,
+        label: node.name,
+        category: node.catalogue,
+        color: node.catalogue === '基础' ? '#22c55e' :
+                node.catalogue === '动作' ? '#3b82f6' :
+                node.catalogue === '控制' ? '#f59e0b' :
+                node.catalogue === '检测' ? '#06b6d4' : '#6b7280',
+        nodeDefinition: node,
+      }))
+      setNodeTemplates(templates)
+      setLoading(false)
+    } catch (error) {
+      console.error('Failed to load node definitions:', error)
+      setLoading(false)
+    }
+  }, [])
 
   // 按分类组织节点
   const categorizedNodes = useMemo(() => {
-    const categories = new Map<string, NodeTemplate[]>()
-    NODE_TEMPLATES.forEach((node) => {
-      if (!categories.has(node.category)) {
-        categories.set(node.category, [])
-      }
-      categories.get(node.category)!.push(node)
-    })
-    return categories
-  }, [])
+    return groupNodesByCategory(nodeTemplates)
+  }, [nodeTemplates])
 
-  const handleDragStart = (event: React.DragEvent, nodeType: NodeType, label: string) => {
+  const handleDragStart = (event: React.DragEvent, nodeType: string, schemaId: number, label: string) => {
     event.dataTransfer.effectAllowed = 'move'
     event.dataTransfer.setData('application/reactflow', nodeType)
+    event.dataTransfer.setData('schemaId', schemaId.toString())
     event.dataTransfer.setData('label', label)
+  }
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          width: '240px',
+          height: '100%',
+          backgroundColor: '#1f2937',
+          borderRight: '1px solid #374151',
+          padding: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <span style={{ color: '#9ca3af', fontSize: '14px' }}>加载中...</span>
+      </div>
+    )
   }
 
   return (
@@ -95,7 +103,7 @@ const NodePalette = () => {
               <div
                 key={node.type}
                 draggable
-                onDragStart={(e) => handleDragStart(e, node.type, node.label)}
+                onDragStart={(e) => handleDragStart(e, node.type, node.id, node.label)}
                 style={{
                   padding: '10px 12px',
                   borderRadius: '6px',
