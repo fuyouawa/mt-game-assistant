@@ -8,6 +8,6 @@ dotnet %LUBAN_DLL% ^
     -d json ^
     --conf %CONF_ROOT%\luban.conf ^
     -x outputCodeDir=..\conductor\src\data ^
-    -x outputDataDir=..\conductor\dara
+    -x outputDataDir=..\conductor\data
 
 pause
