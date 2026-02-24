@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1001,
+    "name": "进入",
+    "catalogue": "动作",
+    "pin0": {
+      "type": "GameModule",
+      "name": "游戏模块"
+    }
+  }
+]

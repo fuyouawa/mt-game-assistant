@@ -1,0 +1,8 @@
+<module name="">
+
+	<enum name="IdentifyType" comment="识别类型">
+		<var name="IMAGE" alias="图像" />
+		<var name="TEXT" alias="文本" />
+	</enum>
+
+</module>

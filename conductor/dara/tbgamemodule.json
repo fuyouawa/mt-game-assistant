@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1001,
+    "display_name": "主页",
+    "path": "",
+    "identify_type": 0,
+    "identify_asset": "主页.png",
+    "identify_threshold": 0.8,
+    "description": "进入游戏内第一个面板中底下的主页"
+  }
+]

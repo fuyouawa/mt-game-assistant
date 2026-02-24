@@ -1,0 +1,8 @@
+<module name="">
+
+    <bean name="NodePin">
+        <var name="type" type="string" comment="引脚类型" />
+        <var name="name" type="string" comment="引脚名称" />
+    </bean>
+
+</module>
