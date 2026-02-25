@@ -119,6 +119,15 @@ class TablesLoaderClass {
 export const TablesLoader = new TablesLoaderClass()
 
 /**
+ * 层级菜单项接口
+ */
+export interface HierarchicalMenuItem {
+  id: number
+  name: string
+  path: string[]
+}
+
+/**
  * 节点引脚工具函数
  */
 export const NodePinUtils = {
@@ -175,5 +184,47 @@ export const NodePinUtils = {
       default:
         return '未知'
     }
+  }
+}
+
+/**
+ * 层级菜单工具函数
+ */
+export const HierarchicalMenuUtils = {
+  /**
+   * 将 GameModule 转换为层级菜单项
+   */
+  gameModuleToMenuItems(modules: GameModule[]): HierarchicalMenuItem[] {
+    return modules.map(module => ({
+      id: module.id,
+      name: module.fullName.split('/').pop() || module.fullName,
+      path: module.fullName.split('/').map(s => s.trim())
+    }))
+  },
+
+  /**
+   * 将 GameButton 转换为层级菜单项
+   */
+  gameButtonToMenuItems(buttons: GameButton[]): HierarchicalMenuItem[] {
+    return buttons.map(button => ({
+      id: button.id,
+      name: button.fullName.split('/').pop() || button.fullName,
+      path: button.fullName.split('/').map(s => s.trim())
+    }))
+  },
+
+  /**
+   * 将 GameCampaign 转换为层级菜单项（使用 owningModule 构建2级路径）
+   */
+  gameCampaignToMenuItems(campaigns: GameCampaign[]): HierarchicalMenuItem[] {
+    return campaigns.map(campaign => {
+      // owningModule 也是路径格式，如"主页/家园"
+      const modulePath = campaign.owningModule.split('/').map(s => s.trim())
+      return {
+        id: campaign.id,
+        name: campaign.name,
+        path: [...modulePath, campaign.name]
+      }
+    })
   }
 }

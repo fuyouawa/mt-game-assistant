@@ -1,8 +1,9 @@
 import { memo, useState, useEffect } from 'react'
 import { Handle, Position, NodeProps } from 'reactflow'
-import { NodePinType, GameModule, GameButton, AutoGameButton, GameCampaign } from '@/data/schema'
+import { NodePinType, AutoGameButton } from '@/data/schema'
 import { SchemaNodeData, PinParamValue } from '@/utils/nodeDefinitionGenerator'
-import { TablesLoader } from '@/utils/tablesLoader'
+import { TablesLoader, HierarchicalMenuItem, HierarchicalMenuUtils } from '@/utils/tablesLoader'
+import HierarchicalMenuSelector from '@/components/HierarchicalMenuSelector'
 
 interface SchemaNodeProps extends NodeProps {
   data: SchemaNodeData
@@ -17,24 +18,22 @@ interface PinParamEditorProps {
 }
 
 const PinParamEditor = memo(({ param, onChange }: PinParamEditorProps) => {
-  const [gameModules, setGameModules] = useState<GameModule[]>([])
-  const [gameButtons, setGameButtons] = useState<GameButton[]>([])
   const [autoGameButtons, setAutoGameButtons] = useState<AutoGameButton[]>([])
-  const [gameCampaigns, setGameCampaigns] = useState<GameCampaign[]>([])
+  const [menuItems, setMenuItems] = useState<HierarchicalMenuItem[]>([])
 
   useEffect(() => {
     if (param.pin.type === NodePinType.GAME_MODULE) {
       const modules = TablesLoader.getGameModules()
-      setGameModules(modules)
+      setMenuItems(HierarchicalMenuUtils.gameModuleToMenuItems(modules))
     } else if (param.pin.type === NodePinType.GAME_BUTTON) {
       const buttons = TablesLoader.getGameButtons()
-      setGameButtons(buttons)
+      setMenuItems(HierarchicalMenuUtils.gameButtonToMenuItems(buttons))
     } else if (param.pin.type === NodePinType.AUTO_GAME_BUTTON) {
       const autoButtons = TablesLoader.getAutoGameButtons()
       setAutoGameButtons(autoButtons)
     } else if (param.pin.type === NodePinType.GAME_CAMPAIGN) {
       const campaigns = TablesLoader.getGameCampaigns()
-      setGameCampaigns(campaigns)
+      setMenuItems(HierarchicalMenuUtils.gameCampaignToMenuItems(campaigns))
     }
   }, [param.pin.type])
 
@@ -84,56 +83,22 @@ const PinParamEditor = memo(({ param, onChange }: PinParamEditorProps) => {
 
       case NodePinType.GAME_MODULE:
         return (
-          <select
-            value={param.value as number ?? ''}
-            onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
-            style={{
-              width: '100%',
-              padding: '6px 8px',
-              borderRadius: '4px',
-              border: '1px solid #4b5563',
-              backgroundColor: '#1f2937',
-              color: '#fff',
-              fontSize: '12px',
-              outline: 'none',
-              boxSizing: 'border-box',
-              cursor: 'pointer',
-            }}
-          >
-            <option value="">请选择游戏模块</option>
-            {gameModules.map((module) => (
-              <option key={module.id} value={module.id}>
-                {module.fullName}
-              </option>
-            ))}
-          </select>
+          <HierarchicalMenuSelector
+            items={menuItems}
+            value={param.value as number ?? null}
+            onChange={onChange}
+            placeholder="请选择游戏模块"
+          />
         )
 
       case NodePinType.GAME_BUTTON:
         return (
-          <select
-            value={param.value as number ?? ''}
-            onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
-            style={{
-              width: '100%',
-              padding: '6px 8px',
-              borderRadius: '4px',
-              border: '1px solid #4b5563',
-              backgroundColor: '#1f2937',
-              color: '#fff',
-              fontSize: '12px',
-              outline: 'none',
-              boxSizing: 'border-box',
-              cursor: 'pointer',
-            }}
-          >
-            <option value="">请选择游戏按钮</option>
-            {gameButtons.map((button) => (
-              <option key={button.id} value={button.id}>
-                {button.fullName}
-              </option>
-            ))}
-          </select>
+          <HierarchicalMenuSelector
+            items={menuItems}
+            value={param.value as number ?? null}
+            onChange={onChange}
+            placeholder="请选择游戏按钮"
+          />
         )
 
       case NodePinType.AUTO_GAME_BUTTON:
@@ -165,29 +130,12 @@ const PinParamEditor = memo(({ param, onChange }: PinParamEditorProps) => {
 
       case NodePinType.GAME_CAMPAIGN:
         return (
-          <select
-            value={param.value as number ?? ''}
-            onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
-            style={{
-              width: '100%',
-              padding: '6px 8px',
-              borderRadius: '4px',
-              border: '1px solid #4b5563',
-              backgroundColor: '#1f2937',
-              color: '#fff',
-              fontSize: '12px',
-              outline: 'none',
-              boxSizing: 'border-box',
-              cursor: 'pointer',
-            }}
-          >
-            <option value="">请选择游戏副本</option>
-            {gameCampaigns.map((campaign) => (
-              <option key={campaign.id} value={campaign.id}>
-                {campaign.name}
-              </option>
-            ))}
-          </select>
+          <HierarchicalMenuSelector
+            items={menuItems}
+            value={param.value as number ?? null}
+            onChange={onChange}
+            placeholder="请选择游戏副本"
+          />
         )
 
       default:
