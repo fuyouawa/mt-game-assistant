@@ -1,8 +1,11 @@
-import { Tables, Node, NodePin, NodePinType, GameModule } from '@/data/schema'
+import { Tables, Node, NodePin, NodePinType, GameModule, GameButton, AutoGameButton, GameCampaign } from '@/data/schema'
 
 // 直接导入 JSON 文件
 import tbnodeJson from '../../data/tbnode.json'
 import tbgamemoduleJson from '../../data/tbgamemodule.json'
+import tbgamebuttonJson from '../../data/tbgamebutton.json'
+import tbautogamebuttonJson from '../../data/tbautogamebutton.json'
+import tbgamecampaignJson from '../../data/tbgamecampaign.json'
 
 /**
  * 配表加载器单例类
@@ -25,6 +28,12 @@ class TablesLoaderClass {
           return tbgamemoduleJson as unknown[]
         case 'tbnode':
           return tbnodeJson as unknown[]
+        case 'tbgamebutton':
+          return tbgamebuttonJson as unknown[]
+        case 'tbautogamebutton':
+          return tbautogamebuttonJson as unknown[]
+        case 'tbgamecampaign':
+          return tbgamecampaignJson as unknown[]
         default:
           throw new Error(`Unknown table file: ${file}`)
       }
@@ -55,6 +64,30 @@ class TablesLoaderClass {
   getGameModules(): GameModule[] {
     const tables = this.load()
     return tables.TbGameModule.getDataList()
+  }
+
+  /**
+   * 获取所有游戏按钮
+   */
+  getGameButtons(): GameButton[] {
+    const tables = this.load()
+    return tables.TbGameButton.getDataList()
+  }
+
+  /**
+   * 获取所有自动游戏按钮
+   */
+  getAutoGameButtons(): AutoGameButton[] {
+    const tables = this.load()
+    return tables.TbAutoGameButton.getDataList()
+  }
+
+  /**
+   * 获取所有游戏副本
+   */
+  getGameCampaigns(): GameCampaign[] {
+    const tables = this.load()
+    return tables.TbGameCampaign.getDataList()
   }
 
   /**
@@ -133,6 +166,12 @@ export const NodePinUtils = {
         return '数值'
       case NodePinType.GAME_MODULE:
         return '游戏模块'
+      case NodePinType.GAME_BUTTON:
+        return '游戏按钮'
+      case NodePinType.AUTO_GAME_BUTTON:
+        return '自动游戏按钮'
+      case NodePinType.GAME_CAMPAIGN:
+        return '游戏副本'
       default:
         return '未知'
     }

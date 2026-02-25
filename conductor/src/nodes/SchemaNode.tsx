@@ -1,9 +1,8 @@
 import { memo, useState, useEffect } from 'react'
 import { Handle, Position, NodeProps } from 'reactflow'
-import { NodePinType } from '@/data/schema'
+import { NodePinType, GameModule, GameButton, AutoGameButton, GameCampaign } from '@/data/schema'
 import { SchemaNodeData, PinParamValue } from '@/utils/nodeDefinitionGenerator'
 import { TablesLoader } from '@/utils/tablesLoader'
-import { GameModule } from '@/data/schema'
 
 interface SchemaNodeProps extends NodeProps {
   data: SchemaNodeData
@@ -19,11 +18,23 @@ interface PinParamEditorProps {
 
 const PinParamEditor = memo(({ param, onChange }: PinParamEditorProps) => {
   const [gameModules, setGameModules] = useState<GameModule[]>([])
+  const [gameButtons, setGameButtons] = useState<GameButton[]>([])
+  const [autoGameButtons, setAutoGameButtons] = useState<AutoGameButton[]>([])
+  const [gameCampaigns, setGameCampaigns] = useState<GameCampaign[]>([])
 
   useEffect(() => {
     if (param.pin.type === NodePinType.GAME_MODULE) {
       const modules = TablesLoader.getGameModules()
       setGameModules(modules)
+    } else if (param.pin.type === NodePinType.GAME_BUTTON) {
+      const buttons = TablesLoader.getGameButtons()
+      setGameButtons(buttons)
+    } else if (param.pin.type === NodePinType.AUTO_GAME_BUTTON) {
+      const autoButtons = TablesLoader.getAutoGameButtons()
+      setAutoGameButtons(autoButtons)
+    } else if (param.pin.type === NodePinType.GAME_CAMPAIGN) {
+      const campaigns = TablesLoader.getGameCampaigns()
+      setGameCampaigns(campaigns)
     }
   }, [param.pin.type])
 
@@ -98,6 +109,87 @@ const PinParamEditor = memo(({ param, onChange }: PinParamEditorProps) => {
           </select>
         )
 
+      case NodePinType.GAME_BUTTON:
+        return (
+          <select
+            value={param.value as number ?? ''}
+            onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
+            style={{
+              width: '100%',
+              padding: '6px 8px',
+              borderRadius: '4px',
+              border: '1px solid #4b5563',
+              backgroundColor: '#1f2937',
+              color: '#fff',
+              fontSize: '12px',
+              outline: 'none',
+              boxSizing: 'border-box',
+              cursor: 'pointer',
+            }}
+          >
+            <option value="">请选择游戏按钮</option>
+            {gameButtons.map((button) => (
+              <option key={button.id} value={button.id}>
+                {button.fullName}
+              </option>
+            ))}
+          </select>
+        )
+
+      case NodePinType.AUTO_GAME_BUTTON:
+        return (
+          <select
+            value={param.value as number ?? ''}
+            onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
+            style={{
+              width: '100%',
+              padding: '6px 8px',
+              borderRadius: '4px',
+              border: '1px solid #4b5563',
+              backgroundColor: '#1f2937',
+              color: '#fff',
+              fontSize: '12px',
+              outline: 'none',
+              boxSizing: 'border-box',
+              cursor: 'pointer',
+            }}
+          >
+            <option value="">请选择自动游戏按钮</option>
+            {autoGameButtons.map((button) => (
+              <option key={button.id} value={button.id}>
+                {button.name}
+              </option>
+            ))}
+          </select>
+        )
+
+      case NodePinType.GAME_CAMPAIGN:
+        return (
+          <select
+            value={param.value as number ?? ''}
+            onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
+            style={{
+              width: '100%',
+              padding: '6px 8px',
+              borderRadius: '4px',
+              border: '1px solid #4b5563',
+              backgroundColor: '#1f2937',
+              color: '#fff',
+              fontSize: '12px',
+              outline: 'none',
+              boxSizing: 'border-box',
+              cursor: 'pointer',
+            }}
+          >
+            <option value="">请选择游戏副本</option>
+            {gameCampaigns.map((campaign) => (
+              <option key={campaign.id} value={campaign.id}>
+                {campaign.name}
+              </option>
+            ))}
+          </select>
+        )
+
       default:
         return <span style={{ color: '#9ca3af', fontSize: '12px' }}>未知类型</span>
     }
@@ -117,7 +209,11 @@ const PinParamEditor = memo(({ param, onChange }: PinParamEditorProps) => {
         {param.pin.name}
         <span style={{ marginLeft: '4px', color: '#6b7280', fontSize: '10px' }}>
           ({param.pin.type === NodePinType.STRING ? '文本' :
-            param.pin.type === NodePinType.NUMBER ? '数值' : '游戏模块'})
+            param.pin.type === NodePinType.NUMBER ? '数值' :
+            param.pin.type === NodePinType.GAME_MODULE ? '游戏模块' :
+            param.pin.type === NodePinType.GAME_BUTTON ? '游戏按钮' :
+            param.pin.type === NodePinType.AUTO_GAME_BUTTON ? '自动游戏按钮' :
+            param.pin.type === NodePinType.GAME_CAMPAIGN ? '游戏副本' : '未知'})
         </span>
       </label>
       {renderEditor()}

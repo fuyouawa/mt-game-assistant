@@ -41,9 +41,168 @@ export enum NodePinType {
      * 游戏模块
      */
     GAME_MODULE = 2,
+    /**
+     * 游戏按钮
+     */
+    GAME_BUTTON = 3,
+    /**
+     * 自动游戏按钮
+     */
+    AUTO_GAME_BUTTON = 4,
+    /**
+     * 游戏副本
+     */
+    GAME_CAMPAIGN = 5,
 }
 
  
+
+
+
+
+
+export class AutoGameButton {
+
+    constructor(_json_: any) {
+        if (_json_.id === undefined) { throw new Error() }
+        this.id = _json_.id
+        if (_json_.name === undefined) { throw new Error() }
+        this.name = _json_.name
+        if (_json_.description === undefined) { throw new Error() }
+        this.description = _json_.description
+    }
+
+    /**
+     * id
+     */
+    readonly id: number
+    /**
+     * 名称
+     */
+    readonly name: string
+    /**
+     * 描述
+     */
+    readonly description: string
+
+    resolve(tables:Tables) {
+        
+        
+        
+    }
+}
+
+
+
+
+
+export class GameButton {
+
+    constructor(_json_: any) {
+        if (_json_.id === undefined) { throw new Error() }
+        this.id = _json_.id
+        if (_json_.full_name === undefined) { throw new Error() }
+        this.fullName = _json_.full_name
+        if (_json_.correspond_auto_control_name === undefined) { throw new Error() }
+        this.correspondAutoControlName = _json_.correspond_auto_control_name
+        if (_json_.identify_type === undefined) { throw new Error() }
+        this.identifyType = _json_.identify_type
+        if (_json_.identify_asset === undefined) { throw new Error() }
+        this.identifyAsset = _json_.identify_asset
+        if (_json_.identify_threshold === undefined) { throw new Error() }
+        this.identifyThreshold = _json_.identify_threshold
+    }
+
+    /**
+     * id
+     */
+    readonly id: number
+    /**
+     * 全名称（路径+名称）
+     */
+    readonly fullName: string
+    /**
+     * 对应的自动游戏按钮名称
+     */
+    readonly correspondAutoControlName: string
+    /**
+     * 识别类型
+     */
+    readonly identifyType: IdentifyType
+    /**
+     * 识别资源（图片或文本）
+     */
+    readonly identifyAsset: string
+    /**
+     * 识别阈值
+     */
+    readonly identifyThreshold: number
+
+    resolve(tables:Tables) {
+        
+        
+        
+        
+        
+        
+    }
+}
+
+
+
+
+
+export class GameCampaign {
+
+    constructor(_json_: any) {
+        if (_json_.id === undefined) { throw new Error() }
+        this.id = _json_.id
+        if (_json_.name === undefined) { throw new Error() }
+        this.name = _json_.name
+        if (_json_.owning_module === undefined) { throw new Error() }
+        this.owningModule = _json_.owning_module
+        if (_json_.identify_type === undefined) { throw new Error() }
+        this.identifyType = _json_.identify_type
+        if (_json_.identify_asset === undefined) { throw new Error() }
+        this.identifyAsset = _json_.identify_asset
+        if (_json_.identify_threshold === undefined) { throw new Error() }
+        this.identifyThreshold = _json_.identify_threshold
+    }
+
+    /**
+     * id
+     */
+    readonly id: number
+    /**
+     * 副本名称
+     */
+    readonly name: string
+    /**
+     * 所属模块
+     */
+    readonly owningModule: string
+    /**
+     * 识别类型
+     */
+    readonly identifyType: IdentifyType
+    /**
+     * 识别资源（图片或文本）
+     */
+    readonly identifyAsset: string
+    /**
+     * 识别阈值
+     */
+    readonly identifyThreshold: number
+
+    resolve(tables:Tables) {
+        
+        
+        
+        
+        
+        
+    }
+}
 
 
 
@@ -118,6 +277,8 @@ export class Node {
         if(_json_.pin1 != undefined) { this.pin1 = new NodePin(_json_.pin1) } else { this.pin1 = undefined }
         if(_json_.pin2 != undefined) { this.pin2 = new NodePin(_json_.pin2) } else { this.pin2 = undefined }
         if(_json_.pin3 != undefined) { this.pin3 = new NodePin(_json_.pin3) } else { this.pin3 = undefined }
+        if (_json_.description === undefined) { throw new Error() }
+        this.description = _json_.description
     }
 
     /**
@@ -148,6 +309,10 @@ export class Node {
      * 引脚3-类型
      */
     readonly pin3: NodePin|undefined
+    /**
+     * 描述
+     */
+    readonly description: string
 
     resolve(tables:Tables) {
         
@@ -157,6 +322,7 @@ export class Node {
         this.pin1?.resolve(tables);
         this.pin2?.resolve(tables);
         this.pin3?.resolve(tables);
+        
     }
 }
 
@@ -255,6 +421,99 @@ export class TbNode {
 
 
 
+export class TbGameCampaign {
+    private _dataMap: Map<number, GameCampaign>
+    private _dataList: GameCampaign[]
+    constructor(_json_: any) {
+        this._dataMap = new Map<number, GameCampaign>()
+        this._dataList = []
+        for(var _json2_ of _json_) {
+            let _v: GameCampaign
+            _v = new GameCampaign(_json2_)
+            this._dataList.push(_v)
+            this._dataMap.set(_v.id, _v)
+        }
+    }
+
+    getDataMap(): Map<number, GameCampaign> { return this._dataMap; }
+    getDataList(): GameCampaign[] { return this._dataList; }
+
+    get(key: number): GameCampaign | undefined { return this._dataMap.get(key); }
+
+    resolve(tables:Tables) {
+        for(let  data of this._dataList)
+        {
+            data.resolve(tables)
+        }
+    }
+
+}
+
+
+
+
+export class TbGameButton {
+    private _dataMap: Map<number, GameButton>
+    private _dataList: GameButton[]
+    constructor(_json_: any) {
+        this._dataMap = new Map<number, GameButton>()
+        this._dataList = []
+        for(var _json2_ of _json_) {
+            let _v: GameButton
+            _v = new GameButton(_json2_)
+            this._dataList.push(_v)
+            this._dataMap.set(_v.id, _v)
+        }
+    }
+
+    getDataMap(): Map<number, GameButton> { return this._dataMap; }
+    getDataList(): GameButton[] { return this._dataList; }
+
+    get(key: number): GameButton | undefined { return this._dataMap.get(key); }
+
+    resolve(tables:Tables) {
+        for(let  data of this._dataList)
+        {
+            data.resolve(tables)
+        }
+    }
+
+}
+
+
+
+
+export class TbAutoGameButton {
+    private _dataMap: Map<number, AutoGameButton>
+    private _dataList: AutoGameButton[]
+    constructor(_json_: any) {
+        this._dataMap = new Map<number, AutoGameButton>()
+        this._dataList = []
+        for(var _json2_ of _json_) {
+            let _v: AutoGameButton
+            _v = new AutoGameButton(_json2_)
+            this._dataList.push(_v)
+            this._dataMap.set(_v.id, _v)
+        }
+    }
+
+    getDataMap(): Map<number, AutoGameButton> { return this._dataMap; }
+    getDataList(): AutoGameButton[] { return this._dataList; }
+
+    get(key: number): AutoGameButton | undefined { return this._dataMap.get(key); }
+
+    resolve(tables:Tables) {
+        for(let  data of this._dataList)
+        {
+            data.resolve(tables)
+        }
+    }
+
+}
+
+
+
+
 type JsonLoader = (file: string) => any
 
 export class Tables {
@@ -262,13 +521,25 @@ export class Tables {
     get TbGameModule(): TbGameModule  { return this._TbGameModule;}
     private _TbNode: TbNode
     get TbNode(): TbNode  { return this._TbNode;}
+    private _TbGameCampaign: TbGameCampaign
+    get TbGameCampaign(): TbGameCampaign  { return this._TbGameCampaign;}
+    private _TbGameButton: TbGameButton
+    get TbGameButton(): TbGameButton  { return this._TbGameButton;}
+    private _TbAutoGameButton: TbAutoGameButton
+    get TbAutoGameButton(): TbAutoGameButton  { return this._TbAutoGameButton;}
 
     constructor(loader: JsonLoader) {
         this._TbGameModule = new TbGameModule(loader('tbgamemodule'))
         this._TbNode = new TbNode(loader('tbnode'))
+        this._TbGameCampaign = new TbGameCampaign(loader('tbgamecampaign'))
+        this._TbGameButton = new TbGameButton(loader('tbgamebutton'))
+        this._TbAutoGameButton = new TbAutoGameButton(loader('tbautogamebutton'))
 
         this._TbGameModule.resolve(this)
         this._TbNode.resolve(this)
+        this._TbGameCampaign.resolve(this)
+        this._TbGameButton.resolve(this)
+        this._TbAutoGameButton.resolve(this)
     }
 }
 

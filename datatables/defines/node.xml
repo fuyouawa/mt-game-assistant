@@ -4,6 +4,9 @@
 		<var name="STRING" alias="文本" />
 		<var name="NUMBER" alias="数值" />
 		<var name="GAME_MODULE" alias="游戏模块" />
+		<var name="GAME_BUTTON" alias="游戏按钮" />
+		<var name="AUTO_GAME_BUTTON" alias="自动游戏按钮" />
+		<var name="GAME_CAMPAIGN" alias="游戏副本" />
 	</enum>
 
     <bean name="NodePin">
