@@ -159,8 +159,8 @@ export class GameCampaign {
         this.id = _json_.id
         if (_json_.name === undefined) { throw new Error() }
         this.name = _json_.name
-        if (_json_.owning_module === undefined) { throw new Error() }
-        this.owningModule = _json_.owning_module
+        if (_json_.game_module === undefined) { throw new Error() }
+        this.gameModule = _json_.game_module
         if (_json_.identify_type === undefined) { throw new Error() }
         this.identifyType = _json_.identify_type
         if (_json_.identify_asset === undefined) { throw new Error() }
@@ -178,9 +178,9 @@ export class GameCampaign {
      */
     readonly name: string
     /**
-     * 所属模块
+     * 所属游戏模块
      */
-    readonly owningModule: string
+    readonly gameModule: string
     /**
      * 识别类型
      */

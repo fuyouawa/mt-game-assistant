@@ -218,12 +218,10 @@ export const HierarchicalMenuUtils = {
    */
   gameCampaignToMenuItems(campaigns: GameCampaign[]): HierarchicalMenuItem[] {
     return campaigns.map(campaign => {
-      // owningModule 也是路径格式，如"主页/家园"
-      const modulePath = campaign.owningModule.split('/').map(s => s.trim())
       return {
         id: campaign.id,
-        name: campaign.name,
-        path: [...modulePath, campaign.name]
+        name: campaign.name.split('/').pop() || campaign.name,
+        path: campaign.name.split('/').map(s => s.trim())
       }
     })
   }

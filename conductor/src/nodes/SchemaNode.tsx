@@ -178,7 +178,7 @@ const SchemaNode = memo((props: SchemaNodeProps) => {
   const { data } = props
 
   // Hooks must be called before any early return
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(true)
   const [localParams, setLocalParams] = useState<PinParamValue[]>(data.params ?? [])
 
   useEffect(() => {
